@@ -9,13 +9,16 @@ logging.basicConfig(filename='work_log.log', level=logging.DEBUG)
 
 
 def clear():
+    """clears the console before moving forward"""
     system('cls') if name == 'nt' else system('clear')
 
 
 def add_entry_prompt():
+    """prompts questions for user to enter info about the entry"""
     while True:
         print('Date of the task')
         date = input('Please use DD/MM/YYYY: ')
+        # checks if the input is in date format
         try:
             datetime.strptime(date, '%d/%m/%Y')
         except ValueError as err:
@@ -26,6 +29,7 @@ def add_entry_prompt():
         else:
             break
     while True:
+        # checks if the input is empty or not
         title = input('Title of the task: ')
         if title != '':
             break
@@ -33,6 +37,7 @@ def add_entry_prompt():
             print()
             print('Please type something. Title is not optional.')
     while True:
+        # checks if the time spent is an integer
         time_spent = input('Time spent (rounded minutes): ')
         try:
             int(time_spent)
@@ -58,6 +63,7 @@ def add_entry_prompt():
 
 
 def search_in_entry_prompt():
+    """prompts options for search"""
     print('Do you want to search by: \n'
           'a) Exact Date \n'
           'b) Range of Dates\n'
@@ -76,6 +82,7 @@ def search_in_entry_prompt():
 
 
 def search_entry(option):
+    """based on the search choice of the user, prompts other questions"""
     global searched_entries
     if option == 'a':
         print()
@@ -111,6 +118,9 @@ def search_entry(option):
         searched_entries = csv_file.search_by_exact_search(string)
     elif option == 'd':
         pattern = input('Search by regex pattern: ')
+        while not pattern:
+            print('Input should not be entry. Please try again.')
+            pattern = input('Search by regex pattern: ')
         searched_entries = csv_file.search_by_regex(pattern)
     elif option == 'e':
         while True:
@@ -138,6 +148,10 @@ def search_entry(option):
 
 
 def choose(option):
+    """does what user chooses to do when the choice is valid,
+    otherwise prints out the error message &
+    redirects user to the first menu
+    """
     option = option.lower()
     clear()
     if option == 'a':
@@ -155,6 +169,7 @@ def choose(option):
 
 
 def format_(my_entries):
+    """formats the entry for a nice view"""
     i = 0
     total_result = len(my_entries)
     while i < total_result:
@@ -164,6 +179,7 @@ def format_(my_entries):
         print('Time Spent: {},'.format(entry['time_spent']))
         print('Notes: {}'.format(entry['notes']))
         print()
+        # creates options on the entry/entries
         if total_result == 1:
             print('[E]dit, [D]elete, [R]eturn to search menu')
         else:
@@ -208,6 +224,7 @@ def format_(my_entries):
 
 
 def first_menu():
+    """provides the user navigation based on the user's choice"""
     print('WORK LOG')
     print('What would you like to do?')
     print('a) Add new entry \n'
@@ -217,4 +234,6 @@ def first_menu():
     choose(my_option)
 
 
-first_menu()  # TODO: Learn what being in --main-- does vs normal
+if __name__ == '__main__':
+    print('Welcome to the Work Log! Hope you like the program!')
+    first_menu()
