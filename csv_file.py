@@ -1,16 +1,17 @@
 from datetime import datetime
-from os import name, system
+from os import name, system, path
 
 import csv
 import logging
 import re
 
-# to record the entries into csv file we need to initialize the csv file
-csvfile = open('entries.csv', 'w', encoding='utf-8')
 fieldnames = ['date', 'title', 'time_spent', 'notes']
-entry_writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-entry_writer.writeheader()
-csvfile.close()
+# to record the entries into csv file we need to initialize the csv file
+if not path.isfile('entries.csv'):
+    csvfile = open('entries.csv', 'w', encoding='utf-8')
+    entry_writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    entry_writer.writeheader()
+    csvfile.close()
 
 logging.basicConfig(filename='csv_file.log', level=logging.DEBUG)
 

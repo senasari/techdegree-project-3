@@ -161,7 +161,6 @@ def choose(option):
     elif option == 'c':
         print('Thanks for using the Work Log program!')
         print('Come again soon.')
-        csv_file.csvfile.close()
         sys.exit(0)
     else:
         print('Not a valid input! Please try a, b or c')
@@ -171,8 +170,9 @@ def choose(option):
 def format_(my_entries):
     """formats the entry for a nice view"""
     i = 0
+    bottom_option = None
     total_result = len(my_entries)
-    while i < total_result:
+    while bottom_option != 'R':
         entry = my_entries[i]
         print('Date: {},'.format(entry['date']))
         print('Title: {},'.format(entry['title']))
@@ -182,45 +182,56 @@ def format_(my_entries):
         # creates options on the entry/entries
         if total_result == 1:
             print('[E]dit, [D]elete, [R]eturn to search menu')
+        elif i == total_result - 1:
+            print('[P]revious, [E]dit, [D]elete,'
+                  ' [R]eturn to search menu')
+        elif i == 0:
+            print('[N]ext, [E]dit, [D]elete,'
+                  ' [R]eturn to search menu')
         else:
             print('[N]ext, [P]revious, [E]dit, [D]elete,'
                   ' [R]eturn to search menu')
 
-        option = input('>')
-        option = option.upper()
+        bottom_option = input('>')
+        bottom_option = bottom_option.upper()
         clear()
-        while option not in list('NPEDR'):
+        while bottom_option not in list('NPEDR'):
             if total_result == 1:
                 print('[E]dit, [D]elete, [R]eturn to search menu')
             else:
                 print('[N]ext, [P]revious, [E]dit,'
                       ' [D]elete, [R]eturn to search menu')
             print('Invalid value! Please try again.')
-            option = input('>')
+            bottom_option = input('>')
 
-        if option == 'N':
-            i += 1
+        if bottom_option == 'N':
+            if i == total_result-1:
+                print('This is the last entry.')
+            else:
+                i += 1
             continue
-        elif option == 'P':
-            i -= 1
+        elif bottom_option == 'P':
+            if i == 0:
+                print('This is the first entry')
+            else:
+                i -= 1
             continue
-        elif option == 'E':
+        elif bottom_option == 'E':
             csv_file.edit_entry(entry)
             print('The entry has been edited. Press enter to return to menu')
             input()
             clear()
             search_in_entry_prompt()
             break
-        elif option == 'D':
+        elif bottom_option == 'D':
             csv_file.delete_entry(entry)
             print('The entry has been deleted. Press enter to return to menu')
             input()
             clear()
             search_in_entry_prompt()
             break
-        elif option == 'R':
+        elif bottom_option == 'R':
             search_in_entry_prompt()
-            break
 
 
 def first_menu():
